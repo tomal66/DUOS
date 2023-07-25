@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 
+ * Copyright (c) 2022
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
+
 #include <sys_init.h>
 #include <cm4.h>
 #include <kmain.h>
@@ -35,30 +35,33 @@
 #include <kstring.h>
 #include <stdint.h>
 #include <usart.h>
-//#include "../include/float.h"
+#include <gpio.h>
+
+// #include "../include/float.h"
 
 void kmain(void)
 {
-__sys_init();
+	__sys_init();
 
-//uint32_t b=0;
-float x=50.59;
-uint8_t y=23,f=56;
-x++;
-kprintf("%d %d %f\n",y,f,x);
-kprintf("After Input\n");
-//uint8_t p[8]="1234.34\0";
-//x=str2float(p);
-kprintf("After Input\n");
-kprintf("Time Elapse %d ms\n",__getTime());
-while(1){
-//	kprintf((uint8_t*)"%d",(uint8_t*)a);
-//	kscanf((uint8_t*)"%d",(uint8_t*)b);
-//	kprintf((uint8_t*)"%d",(uint8_t*)b);
-//	a++;
-//	b++;
-	//you can change the following line by replacing a delay function
-	//for(uint32_t i=0;i<100000000;i++){kprintf("Time Elapse %d ms\n",__getTime());}	
+	uint32_t b = 0;
+	float x = 50.59;
+	uint8_t y = 23, f = 56;
+	x++;
+	kprintf("%d %d %f\n", y, f, x);
+	led_init();
+	// kprintf("After Input\n");
+	// uint8_t p[8]="1234.34\0";
+	// x=str2float(p);
+	// kprintf("After Input\n");
+	kprintf("Time Elapse %d ms\n", __getTime());
+	
+	
+	while (1)
+	{
+		
+		kprintf("Enter an integer: \n");
+		kscanf("%d", &b);
+		kprintf("You entered: %d\n", b);
+		show_digit(b);
+	}
 }
-}
-
