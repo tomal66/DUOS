@@ -48,6 +48,7 @@ void __sys_init(void)
 	kprintf("CPUID %x\n", SCB->CPUID);
 	kprintf("OS Version: 1.0\n");
 	kprintf("Time Elapse %d ms\n",__getTime());
+	kprintf("Rolls: 38 & 58\r\n");
 	kprintf("Wellcome ....\r\n");
 	kprintf("*************************************\r\n");
 	kprintf("# ");
