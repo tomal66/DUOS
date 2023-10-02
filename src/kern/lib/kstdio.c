@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 
+ * Copyright (c) 2022
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -27,125 +27,142 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
+
 #include <kstdio.h>
 #include <stm32_peps.h>
 #include <usart.h>
 #include <kstring.h>
+#include <seven_segment.h>
 /**
-* first argument define the type of string to kprintf and kscanf, 
-* %c for charater
-* %s for string, 
-* %d for integer
-* %x hexadecimal
-* %o octal number
-* %f for floating point number
-*/
+ * first argument define the type of string to kprintf and kscanf,
+ * %c for charater
+ * %s for string,
+ * %d for integer
+ * %x hexadecimal
+ * %o octal number
+ * %f for floating point number
+ */
 // Simplified version of printf
-void kprintf(char *format,...)
+
+void kprintf(char *format, ...)
 {
-//write your code here
+	// write your code here
 	char *tr;
 	uint32_t i;
 	uint8_t *str;
 	va_list list;
 	double dval;
-	//uint32_t *intval;
-	va_start(list,format);
-	for(tr = format;*tr != '\0';tr++)
+
+	// uint32_t *intval;
+	va_start(list, format);
+	for (tr = format; *tr != '\0'; tr++)
 	{
-		while(*tr != '%' && *tr!='\0')
+		while (*tr != '%' && *tr != '\0')
 		{
-		UART_SendChar(USART2,*tr);
-		tr++;
+			UART_SendChar(USART2, *tr);
+			tr++;
 		}
-		if(*tr == '\0') break;
+		if (*tr == '\0')
+			break;
 		tr++;
 		switch (*tr)
 		{
-		case 'c': i = va_arg(list,int);
-			UART_SendChar(USART2,i);
+		case 'c':
+			i = va_arg(list, int);
+			UART_SendChar(USART2, i);
 			break;
-		case 'd': i = va_arg(list,int);
-			if(i<0)
+		case 'd':
+			i = va_arg(list, int);
+			if (i < 0)
 			{
-				UART_SendChar(USART2,'-');
-				i=-i;				
+				UART_SendChar(USART2, '-');
+				i = -i;
 			}
-			_USART_WRITE(USART2,(uint8_t*)convert(i,10));
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 10));
 			break;
-		case 'o': i = va_arg(list,int);
-			if(i<0)
+		case 'o':
+			i = va_arg(list, int);
+			if (i < 0)
 			{
-				UART_SendChar(USART2,'-');
-				i=-i;				
+				UART_SendChar(USART2, '-');
+				i = -i;
 			}
-			_USART_WRITE(USART2,(uint8_t*)convert(i,8));
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 8));
 			break;
-		case 'x': i = va_arg(list,int);
-			if(i<0)
+		case 'x':
+			i = va_arg(list, int);
+			if (i < 0)
 			{
-				UART_SendChar(USART2,'-');
-				i=-i;				
+				UART_SendChar(USART2, '-');
+				i = -i;
 			}
-			_USART_WRITE(USART2,(uint8_t*)convert(i,16));
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 16));
 			break;
-		case 's': str = va_arg(list,uint8_t*);
-			_USART_WRITE(USART2,str);
+		case 's':
+			str = va_arg(list, uint8_t *);
+			_USART_WRITE(USART2, str);
 			break;
-		case 'f': 
-			dval = va_arg(list,double);
-			_USART_WRITE(USART2,(uint8_t*)float2str(dval));
-			break;	
+		case 'f':
+			dval = va_arg(list, double);
+			_USART_WRITE(USART2, (uint8_t *)float2str(dval));
+			break;
 		default:
 			break;
 		}
 	}
 	va_end(list);
 }
-
-// Simplified version of scanf
-void kscanf(char *format,...)
+void kprintf_led(int n, char *format, ...)
 {
-//write your code here
+	LedMatrix(n);
+	
+}
+// Simplified version of scanf
+void kscanf(char *format, ...)
+{
+	// write your code here
 	va_list list;
 	char *ptr;
 	uint8_t buff[50];
-	ptr=format;
-	va_start(list,format);
+	uint8_t *str;
+	int len;
+	ptr = format;
+	va_start(list, format);
 	while (*ptr)
 	{
-		/* code */
-		if(*ptr == '%') //looking for format of an input
+		if (*ptr == '%') // looking for format of an input
 		{
 			ptr++;
 			switch (*ptr)
 			{
-			case /* constant-expression */ 'c': //charater
-				/* code */
-				*(uint8_t*)va_arg(list,uint8_t*)=UART_GetChar(USART2);
+			case 'c': // charater
+				*(uint8_t *)va_arg(list, uint8_t *) = UART_GetChar(USART2);
 				break;
-			case 'd': //integer number 
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,10);	
+			case 'd': // integer number
+				_USART_READ_STR(USART2, buff, 50);
+				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 10);
 				break;
-			case 's': //need to update -- string
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,10);	
+			case 's': // string without spaces
+				_USART_READ_STR(USART2, buff, 50);
+				str = va_arg(list, uint8_t *);
+				len = __strlen(buff);
+				for (int u = 0; u <= len; u++) // copy from buff to user defined char pointer (i.e string)
+					str[u] = buff[u];
 				break;
-			case 'x': //hexadecimal number
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,16);	
-				break;	
-			case 'o': //octal number
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,8);	
-				break;	
-			case 'f': //floating point number
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,double*)=__str_to_num(buff,10);	
-				break;	
-			default: //rest not recognized
+			case 'x': // hexadecimal number
+				_USART_READ_STR(USART2, buff, 50);
+				*(int *)va_arg(list, uint32_t *) = __str_to_num(buff, 16);
+				break;
+			case 'o': // octal number
+				_USART_READ_STR(USART2, buff, 50);
+				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 8);
+				break;
+			case 'f': // floating point number
+				_USART_READ_STR(USART2, buff, 50);
+				//*(uint32_t*)va_arg(list,double*) = __str_to_num(buff,10);
+				*(float *)va_arg(list, float *) = str2float(buff); // Works for float but not for double !!!
+				break;
+			default: // rest not recognized
 				break;
 			}
 		}
@@ -153,4 +170,3 @@ void kscanf(char *format,...)
 	}
 	va_end(list);
 }
-

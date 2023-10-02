@@ -4,21 +4,16 @@
 extern "C" {
 #endif
 #include <stdint.h>
-#include <gpio.h>>
-
-#define a 8
-#define b 9
-#define c 10
-#define d 11
-#define e 4
-#define f 5
-#define g 6
-
+/**
+ * Your code goes here 
+**/
 uint32_t module_init(void); //return 0 for successful otherwise unsuccessfull
 void module_exit(void); //disable or offload the device
-
+void test();
+void LedMatrix(int num);
+void ledArray(int n[3][3]);
+void reset();
 #ifdef __cplusplus
 }
-#endif
 #endif
 #endif

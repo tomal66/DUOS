@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "cstdarg": "c",
+    "kstdio.h": "c",
+    "__config": "cpp",
+    "seven_segment.h": "c",
+    "stdarg.h": "c",
+    "cm4.h": "c",
+    "stm32_peps.h": "c",
+    "sys.h": "c",
+    "stm32_startup.h": "c",
+    "test_interrupt.h": "c",
+    "clock.h": "c",
+    "usart.h": "c",
+    "gpio.h": "c",
+    "chrono": "c"
+  }
+}

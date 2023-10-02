@@ -30,11 +30,15 @@
  
 #ifndef __KSTDIO_H
 #define __KSTDIO_H
+
+
 #include <stdint.h>
 #include <stdarg.h>
 
-void kprintf(char*,...); 
 void kscanf(char*,...);
-uint8_t strcomp(uint8_t*,uint8_t*);
+void Delay(uint32_t ms);
+void kprintf_led(int n, char *format, ...);
+void kprintf(char *format, ...);
+uint8_t strcomp(uint8_t *, uint8_t *);
 #endif /* KSTDIO */
 

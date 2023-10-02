@@ -35,34 +35,83 @@
 #include <kstring.h>
 #include <stdint.h>
 #include <usart.h>
-#include <gpio.h>
 #include <seven_segment.h>
+#include <sys.h>
+#include <syscall_def.h>
+#include <test_interrupt.h>
 
-// #include "../include/float.h"
+// void __svc(SYS_write) svc_kprintf(const char* fmt);
+
+// void __svc(SYS_write) svc_kprintf(const char* fmt, ...) 
+// {
+//     // Empty body. The real work is done in the SVC handler.
+//     // This function's purpose is to trigger the SVC interrupt.
+// }
 
 void kmain(void)
 {
 	__sys_init();
 
-	uint32_t b = 0;
-	float x = 50.59;
-	uint8_t y = 23, f = 56;
-	x++;
-	kprintf("%d %d %f\n", y, f, x);
-	module_init();
-	// kprintf("After Input\n");
-	// uint8_t p[8]="1234.34\0";
-	// x=str2float(p);
-	// kprintf("After Input\n");
-	kprintf("Time Elapse %d ms\n", __getTime());
+	__SysTick_init(10000);	
 	
-	
+
+	// /__SysTick_init(1000000);	//enable systick for 100ms
+	int n = 0;
+	EXTI_Init(GPIOC, 0);
 	while (1)
 	{
+		// kprintf(".........................Lab 2..................\n");
+		// kprintf("Press 1: Print using SVC.........\n");
+		// if(n==1)
+		// {
+		// 	svc_kprintf("Hello world!");
+		// }
+		if (n != 6)
+		{
+			kprintf("\n1: Reboot\n2: HardFault\n3: SysTick\n4: Check NVIC\n5: Set Base Priority\n");
+			kscanf("%d", &n);
+			
+		}
+		if (n == 1)
+		{
+			n = 0;
+			reboot();
+		}
+		else if (n == 2)
+		{
+			n = 0;
+			hardfault_event();
+			disableSysTickInterrupt();
+		}
+		else if (n == 3)
+		{
+			n = 0;
+
+			 NVIC_SetPriority(SysTick_IRQn, 1);
+			 NVIC_SetPriority(EXTI0_IRQn, 5);
+			 __mscount = 0;
+			 enableSysTickInterrupt();
+			 for (int i = 0; i < 1000000; i++)
+				 ;
+		}
+		else if (n == 4)
+		{
+			n = 0;
+			kprintf("EXTI: %d\n", NVIC_GetPriority(EXTI0_IRQn));
+			kprintf("SysTick: %d\n", NVIC_GetPriority(SysTick_IRQn));
+			kprintf("EXTI1_IRQn: %d\n", NVIC_GetPriority(EXTI0_IRQn));
+			kprintf("BASE: %d\n", Get_BASEPRI_Value());
+		}
+		else if (n == 5)
+		{
+			n = 0;
+			Set_BASEPRI(1);
+		}
+		else if (n == 6)
+		{
+			n = 0;
+			break;
+		}
 		
-		kprintf("Enter an integer: \n");
-		kscanf("%d", &b);
-		kprintf("You entered: %d\n", b);
-		show_digit(b);
 	}
 }

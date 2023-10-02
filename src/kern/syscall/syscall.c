@@ -30,6 +30,7 @@
 
 #include <syscall.h>
 #include <syscall_def.h>
+#include <kstdio.h>
 #include <errno.h>
 #include <errmsg.h>
 void syscall(uint16_t callno)
@@ -42,6 +43,7 @@ void syscall(uint16_t callno)
 		case SYS_read: 
 			break;
 		case SYS_write:
+			//kprintf((const char *)svc_args[0]);
 			break;
 		case SYS_reboot:
 			break;	
