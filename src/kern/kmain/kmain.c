@@ -36,6 +36,7 @@
 #include <stdint.h>
 #include <usart.h>
 #include <gpio.h>
+#include <seven_segment.h>
 
 // #include "../include/float.h"
 
@@ -48,7 +49,7 @@ void kmain(void)
 	uint8_t y = 23, f = 56;
 	x++;
 	kprintf("%d %d %f\n", y, f, x);
-	led_init();
+	module_init();
 	// kprintf("After Input\n");
 	// uint8_t p[8]="1234.34\0";
 	// x=str2float(p);

@@ -31,8 +31,4 @@
 #define __GPIO_H
 #include "../sys/stm32_peps.h"
 void DRV_GPIO_INIT(GPIO_TypeDef*);
-void led_init();
-void led_on(uint8_t led_no);
-void led_off(uint8_t led_no);
-void show_digit(uint8_t n);
 #endif
