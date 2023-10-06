@@ -40,17 +40,11 @@
 #include <syscall_def.h>
 #include <test_interrupt.h>
 
-// void __svc(SYS_write) svc_kprintf(const char* fmt);
-
-// void __svc(SYS_write) svc_kprintf(const char* fmt, ...) 
-// {
-//     // Empty body. The real work is done in the SVC handler.
-//     // This function's purpose is to trigger the SVC interrupt.
-// }
 
 void kmain(void)
 {
 	__sys_init();
+	SVC_Init();
 
 	__SysTick_init(10000);	
 	
@@ -60,57 +54,11 @@ void kmain(void)
 	EXTI_Init(GPIOC, 0);
 	while (1)
 	{
-		// kprintf(".........................Lab 2..................\n");
-		// kprintf("Press 1: Print using SVC.........\n");
-		// if(n==1)
-		// {
-		// 	svc_kprintf("Hello world!");
-		// }
-		if (n != 6)
+		kprintf(".........................Lab 2....................\n");
+		kprintf("Press 1: Print using SVC.........\n");
+		if(n==1)
 		{
-			kprintf("\n1: Reboot\n2: HardFault\n3: SysTick\n4: Check NVIC\n5: Set Base Priority\n");
-			kscanf("%d", &n);
-			
-		}
-		if (n == 1)
-		{
-			n = 0;
-			reboot();
-		}
-		else if (n == 2)
-		{
-			n = 0;
-			hardfault_event();
-			disableSysTickInterrupt();
-		}
-		else if (n == 3)
-		{
-			n = 0;
-
-			 NVIC_SetPriority(SysTick_IRQn, 1);
-			 NVIC_SetPriority(EXTI0_IRQn, 5);
-			 __mscount = 0;
-			 enableSysTickInterrupt();
-			 for (int i = 0; i < 1000000; i++)
-				 ;
-		}
-		else if (n == 4)
-		{
-			n = 0;
-			kprintf("EXTI: %d\n", NVIC_GetPriority(EXTI0_IRQn));
-			kprintf("SysTick: %d\n", NVIC_GetPriority(SysTick_IRQn));
-			kprintf("EXTI1_IRQn: %d\n", NVIC_GetPriority(EXTI0_IRQn));
-			kprintf("BASE: %d\n", Get_BASEPRI_Value());
-		}
-		else if (n == 5)
-		{
-			n = 0;
-			Set_BASEPRI(1);
-		}
-		else if (n == 6)
-		{
-			n = 0;
-			break;
+			__asm volatile("svc #55");
 		}
 		
 	}

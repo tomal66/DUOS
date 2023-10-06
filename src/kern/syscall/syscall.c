@@ -43,7 +43,7 @@ void syscall(uint16_t callno)
 		case SYS_read: 
 			break;
 		case SYS_write:
-			//kprintf((const char *)svc_args[0]);
+			kprintf("Asche");
 			break;
 		case SYS_reboot:
 			break;	

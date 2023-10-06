@@ -123,21 +123,29 @@ void SysTick_Handler(void)
 // 	ALIGN 4
 // }
 
-void SVC_Handler_main(unsigned int * svc_args)
+void SVC_Handler_Main( uint32_t *svc_args )
 {
-	// Stack frame contains:
-	// r0, r1, r2, r3, r12, r14, the return address and xPSR
-	// - Stacked R0 = svc_args[0];
-	// - Stacked R1 = svc_args[1];
-	// - Stacked R2 = svc_args[2];
-	// - Stacked R3 = svc_args[3];
-	// - Stacked R12 = svc_args[4]
-	// - Stacked LR = svc_args[5]
-	// - Stacked PC = svc_args[6]
-	// - Stacked xPSR = svc_args[7]
-	unsigned int svc_number;
-	svc_number = ((char *)svc_args[6])[-2];
-	syscall(svc_number);
+	uint32_t svc_number = 0;
+	//pring string in r0
+	kprintf("svc_args[0] = %s\n",svc_args[0]);
+	for (int i = 1;i < 3;i++){
+		kprintf("svc_args[%d] = %d\n",i,svc_args[i]);
+	}
 
-	return;
+	svc_number = ((char *)svc_args[6])[-2] ;
+	kprintf("svc number %d\n",svc_number);
+	syscall(svc_number);
+}
+
+void SVC_Init(void){
+	uint32_t psp_stack[1024];
+    PSP_Init(psp_stack + 1024);
+   __asm volatile (
+		".global PSP_Init\n"
+		"PSP_Init:\n"
+			"msr psp, r0\n"
+			"mov r0, #3\n"
+			"msr control, r0\n"
+			"isb\n"
+	);
 }

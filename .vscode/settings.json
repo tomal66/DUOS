@@ -13,6 +13,7 @@
     "clock.h": "c",
     "usart.h": "c",
     "gpio.h": "c",
-    "chrono": "c"
+    "chrono": "c",
+    "syscall_def.h": "c"
   }
 }
